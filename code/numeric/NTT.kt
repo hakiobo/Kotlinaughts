@@ -19,10 +19,10 @@ private class NTT {
         }
         val rev = IntArray(n)
         for (i in 0 until n) {
-            rev[i] = (rev[i shr 1] or ((i and 1) shl l))
+            rev[i] = (rev[i shr 1] or ((i and 1) shl l)) shr 1
         }
         for (i in 0 until n) {
-            if (i < rev[n]) {
+            if (i < rev[i]) {
                 val temp = a[i]
                 a[i] = a[rev[i]]
                 a[rev[i]] = temp
