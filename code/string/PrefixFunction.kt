@@ -8,3 +8,18 @@ private fun prefixFunction(s: String): IntArray {
     }
     return pi
 }
+
+private fun createAutomaton(s: String): Array<IntArray> {
+    val aut = Array(s.length + 1) { IntArray(26) }
+    val pi = prefixFunction(s)
+    for (i in 0..s.length) {
+        for (c in 0 until 26) {
+            aut[i][c] = if (i == s.length || (i > 1 && 'a' + c != s[i])) {
+                aut[pi[i - 1]][c]
+            } else {
+                i + if ('a' + c == s[i]) 1 else 0
+            }
+        }
+    }
+    return aut
+}
