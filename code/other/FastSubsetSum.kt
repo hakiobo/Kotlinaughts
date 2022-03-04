@@ -4,25 +4,25 @@ private fun fastSubsetSum(nums: IntArray, goal: Int, x: Int): Int {
     val cur = IntArray(x)
     var part = 0
     var b = 0
-    while (part + nums[b] <= goal) {
+    while (b < n && part + nums[b] <= goal) {
         part += nums[b]
         b++
     }
+    if(b == n) return part
     maxPref[part - goal + x - 1] = b
 
     for (t in b until n) {
         if (maxPref[x - 1] >= 0) return goal
+        val s = nums[t]
         for (mu in (x - 2) downTo 0) {
-            maxPref[mu + nums[t]] = max(maxPref[mu + nums[t]], maxPref[mu])
+            maxPref[mu + s] = max(maxPref[mu + s], maxPref[mu])
         }
-        for (mu in ((x-1) shl 1) downTo x) {
-            var j = cur[mu - x]
-            while (j < maxPref[mu]) {
+        for (mu in ((x - 1) shl 1) downTo x) {
+            for (j in maxPref[mu] - 1 downTo cur[mu - x]) {
                 val mup = mu - nums[j]
                 maxPref[mup] = max(maxPref[mup], j)
-                j++
             }
-            cur[mu - x] = j
+            cur[mu - x] = max(cur[mu - x], maxPref[mu])
         }
     }
 
