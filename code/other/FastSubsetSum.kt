@@ -1,6 +1,6 @@
 private fun fastSubsetSum(nums: IntArray, goal: Int, x: Int): Int {
     val n = nums.size
-    val maxPref = IntArray(x shl 1) { -1 }
+    val maxPref = IntArray((x shl 1) - 1) { -1 }
     val cur = IntArray(x)
     var part = 0
     var b = 0
@@ -12,10 +12,10 @@ private fun fastSubsetSum(nums: IntArray, goal: Int, x: Int): Int {
 
     for (t in b until n) {
         if (maxPref[x - 1] >= 0) return goal
-        for (mu in (x - 1) downTo 0) {
+        for (mu in (x - 2) downTo 0) {
             maxPref[mu + nums[t]] = max(maxPref[mu + nums[t]], maxPref[mu])
         }
-        for (mu in ((x shl 1) - 1) downTo x) {
+        for (mu in ((x-1) shl 1) downTo x) {
             var j = cur[mu - x]
             while (j < maxPref[mu]) {
                 val mup = mu - nums[j]
