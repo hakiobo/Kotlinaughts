@@ -41,10 +41,13 @@ private fun fastSubsetSum(nums: IntArray, goal: Int, x: Int): BooleanArray {
     val cur = IntArray(x)
     var part = 0
     var b = 0
-    while (part + nums[b] <= goal) {
+    val used = BooleanArray(n)
+    while (b < n && part + nums[b] <= goal) {
         part += nums[b]
+        used[b] = true
         b++
     }
+    if (b == n) return used
     maxPref[part - goal + x - 1] = b
     val prev = Array((x shl 1) - 1) { IntArray(b + 1) { -1 } }
     prev[part - goal + x - 1][b] = n
@@ -69,10 +72,6 @@ private fun fastSubsetSum(nums: IntArray, goal: Int, x: Int): BooleanArray {
             cur[mu - x] = max(cur[mu - x], maxPref[mu])
         }
     }
-    val used = BooleanArray(n)
-    for (i in 0 until b) {
-        used[i] = true
-    }
 
     for (i in x - 1 downTo 0) {
         if (maxPref[i] >= 0) {
@@ -80,13 +79,11 @@ private fun fastSubsetSum(nums: IntArray, goal: Int, x: Int): BooleanArray {
             var a = maxPref[i]
             var p = prev[curSum][a]
             while (p != n) {
-                used[p] = p >= b
-                curSum += nums[p] * if (p < b) {
+                used[p] = !used[p]
+                curSum += nums[p] * if (used[p]) -1 else {
                     a++
                     1
-                } else -1
-
-
+                }
                 while (prev[curSum][a] == -1) {
                     a++
                 }
