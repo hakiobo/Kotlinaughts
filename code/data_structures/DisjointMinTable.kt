@@ -25,7 +25,7 @@ private class DisjointMinTable(input: IntArray) {
     }
 
     fun getMinRange(start: Int, end: Int): Int {
-        if (end < start) return getMinRange(start, end)
+        if (end < start) return getMinRange(end, start)
         if (start == end) return nums[start]
         val level = levels - 1 - Integer.numberOfTrailingZeros(Integer.highestOneBit(start xor end))
         return min(table[level][start], table[level][end])
