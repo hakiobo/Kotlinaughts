@@ -1,4 +1,4 @@
-private class ModularEQSolver(val matrix: Array<IntArray>, val p: Int) {
+private class ModLinEqSolver(val matrix: Array<IntArray>, val p: Int) {
     val inv = IntArray(p) { num ->
         modPow(num.toLong(), (p - 2).toLong(), p.toLong()).toInt()
     }
@@ -15,7 +15,6 @@ private class ModularEQSolver(val matrix: Array<IntArray>, val p: Int) {
         for (x in matrix[row].indices) {
             matrix[row][x] *= mult
             matrix[row][x] %= p
-
         }
     }
 
