@@ -1,7 +1,7 @@
 // https://open.kattis.com/problems/cordonbleu
 // https://open.kattis.com/problems/toursdesalesforce
 // Min Cost Match Matching
-private class HungarianMatching(val costs: Array<IntArray>) { // assuming a square matrix of costs
+private class Hungarian(val costs: Array<IntArray>) { // assuming a square matrix of costs
     val n = costs.size
     var adjustment = 0
     val adjustmentByRow = IntArray(n)
