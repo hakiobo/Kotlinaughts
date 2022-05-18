@@ -1,97 +1,69 @@
-import java.util.*
-
 /**
  * Add all the words you need with the add function
  * then call build failures once you're done setting up the dictionary
- *
- * You'll likely need to mess with countMatches to make it do exactly what you need for your current problem
  */
-private class AhoCorasick(n: Int) {
-    val trie = Array(n) { IntArray(26) { -1 } }
-    val wordId = IntArray(n) { -1 }
+private class AhoCorasick(maxNodes: Int) {
+    val trie = Array(maxNodes) { IntArray(ALPHA_SIZE) { -1 } }
+    val wordId = IntArray(maxNodes) { -1 }
     var numNodes = 1
-    val wordToNode = mutableListOf<Int>()
-    val wordCount = mutableListOf<Int>()
-    val completedWords = Array(n) { TreeSet<Int>() }
-    val fail = IntArray(n) { -1 }
+    var numWords = 0
+    val fail = IntArray(maxNodes)
+    val suffixFail = IntArray(maxNodes) { -1 }
 
-    fun addAllAndBuild(dict: List<String>) {
-        for (s in dict) {
-            add(s)
-        }
-        buildFailures()
-    }
-
-    private fun add(s: String) {
+    fun add(s: String) {
         var curNode = 0
-        var curDepth = 0
         var curIdx = 0
         while (curIdx != s.length) {
-            val c = s[curIdx] - 'a'
+            val c = s[curIdx] - BASE_CHAR
             if (trie[curNode][c] == -1) {
                 trie[curNode][c] = numNodes++
             }
             curNode = trie[curNode][c]
-            curDepth++
             curIdx++
         }
         if (wordId[curNode] == -1) {
-            wordId[curNode] = wordToNode.size
-            wordCount += 0
-            wordToNode += curNode
-            completedWords[curNode].add(wordId[curNode])
+            wordId[curNode] = numWords++
         }
     }
 
-    private fun buildFailures() {
-        val queue = ArrayDeque<Int>()
+    fun buildFailures() {
+        val queue = IntArray(numNodes)
+        var inIdx = 0
+        var outidx = 0
 
-        for (c in 0 until 26) {
+        for (c in 0 until ALPHA_SIZE) {
             if (trie[0][c] == -1) {
                 trie[0][c] = 0
             } else {
-                fail[trie[0][c]] = 0
-                queue += trie[0][c]
+                queue[inIdx++] = trie[0][c]
             }
         }
-        while (queue.isNotEmpty()) {
-            val curState = queue.poll()
-            for (c in 0 until 26) {
+        while (outidx < inIdx) {
+            val curState = queue[outidx++]
+            for (c in 0 until ALPHA_SIZE) {
+                val failure = trie[fail[curState]][c]
                 if (trie[curState][c] != -1) {
-                    var failure = fail[curState]
-                    while (trie[failure][c] == -1) {
-                        failure = fail[failure]
-                    }
-                    failure = trie[failure][c]
                     fail[trie[curState][c]] = failure
 
-
-                    //stuff
-                    completedWords[trie[curState][c]].addAll(completedWords[failure])
-
-
-                    queue += trie[curState][c]
+                    if (wordId[failure] != -1) {
+                        suffixFail[trie[curState][c]] = failure
+                    } else {
+                        suffixFail[trie[curState][c]] = suffixFail[failure]
+                    }
+                    queue[inIdx++] = trie[curState][c]
+                } else {
+                    trie[curState][c] = failure
                 }
             }
         }
     }
 
-    private fun nextState(curState: Int, ch: Char): Int {
-        val c = ch - 'a'
-        var ret = curState
-        while (trie[ret][c] == -1) {
-            ret = fail[ret]
-        }
-        return trie[ret][c]
+    fun nextState(curState: Int, ch: Char): Int {
+        return trie[curState][ch - BASE_CHAR]
     }
 
-    fun countMatches(s: String): Int {
-        var curState = 0
-        var ct = 0
-        for (c in s) {
-            curState = nextState(curState, c)
-            ct += completedWords[curState].size
-        }
-        return ct
+    companion object {
+        const val BASE_CHAR = 'a'
+        const val ALPHA_SIZE = 26
     }
 }
