@@ -1,4 +1,3 @@
-import java.util.ArrayDeque //edit once kattis switches to 1.4
 import kotlin.math.min
 
 private class DinicFlow(n: Int = 0) {
@@ -28,7 +27,7 @@ private class DinicFlow(n: Int = 0) {
         level[src] = 0
         queue += src
         while (queue.isNotEmpty()) {
-            val node = queue.poll()
+            val node = queue.removeFirst()
             for (edge in edges[node]) {
                 val dest = dests[edge]
                 if (capacities[edge] > 0 && level[dest] == -1) {
