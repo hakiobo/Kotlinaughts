@@ -1,7 +1,7 @@
 private class SparseMinTable(val nums: IntArray) {
     val n = nums.size
     val table = Array(
-        Integer.numberOfTrailingZeros(Integer.highestOneBit((n shl 2) - 1))
+        ((n shl 2) - 1).takeHighestOneBit().countTrailingZeroBits()
     ) { IntArray(n) }
 
     init {
@@ -25,18 +25,14 @@ private class SparseMinTable(val nums: IntArray) {
     fun getMinRange(start: Int, end: Int): Int {
         return if (start <= end) {
             val dif = end - start + 1
-            val high = Integer.highestOneBit(dif)
-            val bit = Integer.numberOfTrailingZeros(high)
+            val high = dif.takeHighestOneBit()
+            val bit = high.countTrailingZeroBits()
             if (high == dif) {
                 table[bit][start]
             } else {
                 val a = table[bit][start]
                 val b = table[bit][end - high + 1]
-                if (nums[a] <= nums[b]) {
-                    a
-                } else {
-                    b
-                }
+                if (nums[a] <= nums[b]) a else b
             }
         } else {
             -1
