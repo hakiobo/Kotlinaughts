@@ -1,7 +1,7 @@
 import kotlin.math.min
 
 private class TopDownLazySegTree(nArg: Int) {
-    private val n = Integer.highestOneBit((nArg shl 1) - 1)
+    private val n = ((nArg shl 1) - 1).takeHighestOneBit()
 
     // default value here, or do initialization in init block
     private val tree = IntArray(n shl 1) { Int.MAX_VALUE }
