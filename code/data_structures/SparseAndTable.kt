@@ -1,9 +1,6 @@
 private class SparseAndTable(nums: LongArray) {
     val n = nums.size
-    val table = Array(
-        if (n.takeHighestOneBit() == n) n.countTrailingZeroBits() + 1
-        else (n - 1).takeHighestOneBit().countTrailingZeroBits() + 1
-    ) { LongArray(n) }
+    val table = Array(n.takeHighestOneBit().countTrailingZeroBits() + 1) { LongArray(n) }
 
     init {
         for (x in 0 until n) {
@@ -24,11 +21,7 @@ private class SparseAndTable(nums: LongArray) {
             val dif = end - start + 1
             val high = dif.takeHighestOneBit()
             val bit = high.countTrailingZeroBits()
-            if (high == dif) {
-                table[bit][start]
-            } else {
-                table[bit][start] and table[bit][end - high + 1]
-            }
+            table[bit][start] and table[bit][end - high + 1]
         } else {
             getANDRange(start, n - 1) and getANDRange(0, end)
         }
