@@ -32,7 +32,7 @@ private class Fenwick(val size: Int) {
     fun prefixSearch(v: Int): Int {
         var idx = 0
         var curSum = 0
-        var curBit = Integer.highestOneBit(size)
+        var curBit = size.takeHighestOneBit()
         while (curBit > 0) {
             if (curBit + idx <= size) {
                 if (curSum + ary[curBit + idx - 1] <= v) {
